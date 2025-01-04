@@ -1,0 +1,33 @@
+{
+  "name": "tokenizer-next-js",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbo",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@tanstack/react-query": "^5.62.15",
+    "connectkit": "^1.8.2",
+    "next": "14.2.5",
+    "next-auth": "^4.24.8",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "viem": "^2.19.6",
+    "wagmi": "^2.12.5",
+    "clsx": "^2.1.1",
+    "qs": "^6.13.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/qs": "^6.9.15",
+    "@types/react-dom": "^18",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.47",
+    "tailwindcss": "^3.4.14",
+    "typescript": "^5"
+  }
+}
