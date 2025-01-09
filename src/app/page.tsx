@@ -5,9 +5,9 @@
 import { useEffect, useState } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
-import { getClaimedRings } from '@/utils/blockchain'
-import { ProjectUser } from '../../types/42api'
-import { checkRingEligibility } from '@/utils/eligibilityChecker'
+
+import { ProjectUser, ProjectsUserList } from '../../types/42api'
+
 import RingsDisplay from '@/components/RingsDisplay'
 import SignInButton from '@/components/SignInButton'
 import { ConnectKitButton } from 'connectkit'
@@ -49,22 +49,34 @@ export default function HomePage() {
 
         setUserName(data.first_name)
         setUserNickname(data.login) // Set user nickname
-        setMyProjects(data.projects_users || []) // Set projects data
+        setMyProjects(data.projects_users || [])
 
-        // const myProjects = data.projects_users || [] // Ensure myProjects is an array
+        const projectsData: ProjectsUserList = data.projects_users
 
-        // if (!Array.isArray(myProjects)) {
-        //   console.error('myProjects is not an array:', myProjects)
-        //   return
-        // }
+        // console.log(projectsData)
 
-        // await window.ethereum?.request({ method: 'eth_requestAccounts' })
+        if (projectsData?.projects_users?.length > 0) {
+          projectsData.projects_users.forEach((userProject) => {
+            const isCompleted =
+              userProject.status === 'completed' ||
+              userProject.validated === true
+            const isInProgress =
+              userProject.status === 'in_progress' &&
+              userProject.validated === null
 
-        // // Iterate over myProjects safely
-        // for (const project of myProjects) {
-        //   console.log('project is', project.project.name)
-        //   console.log('project is', project['validated?'])
-        // }
+            console.log(
+              `Project ${userProject.project.name} is ${
+                isCompleted
+                  ? 'Completed'
+                  : isInProgress
+                  ? 'In Progress'
+                  : 'Not Started'
+              }`
+            )
+          })
+        } else {
+          console.error('No project data yet')
+        }
       }
 
       fetchData()
