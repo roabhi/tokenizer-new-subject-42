@@ -126,168 +126,137 @@ export default function RingsDisplay({
 
   return (
     <div className="max-w-[74rem] mx-auto">
-      <h2 className="text-center mb-8">Claimed Rings</h2>
+      {/* <h2 className="text-center mb-8">Claimed Rings</h2> */}
 
-      {/* Parent container with flex for rings 0 to 5 */}
-      <div className="flex gap-16">
-        {/* Left column: Rings 0, 1, 2 */}
-        <div className="flex flex-col w-1/2 gap-8">
-          {rings.slice(0, 3).map((ring) => (
-            <div
-              key={ring.id}
-              className="flex justify-between items-center space-x-8 p-4 border-b"
-            >
-              {/* Left column: Title and expandable project list */}
-              <div className="flex flex-col w-3/4 items-start">
-                <h3
-                  className="text-xl font-bold cursor-pointer mb-4"
-                  onClick={() => toggleExpandRing(ring.id)}
+      {isConnected ? (
+        <>
+          {/* Parent container with flex for all rings */}
+          <div className="flex gap-16">
+            {/* Left column: Rings 0, 1, 2 */}
+            <div className="flex flex-col w-1/2 gap-8">
+              {rings.slice(0, 3).map((ring) => (
+                <div
+                  key={ring.id}
+                  className="flex justify-between items-center space-x-8 p-4 border-b"
                 >
-                  Ring {ring.id}{' '}
-                  {ring.status === 'claimed' ? '(Claimed)' : '(Claimable)'}
-                </h3>
+                  {/* Left column: Title and expandable project list */}
+                  <div className="flex flex-col w-3/4 items-start">
+                    <h3
+                      className="text-xl font-bold cursor-pointer mb-4"
+                      onClick={() => toggleExpandRing(ring.id)}
+                    >
+                      Ring {ring.id}{' '}
+                      {ring.status === 'claimed' ? '(Claimed)' : '(Claimable)'}
+                    </h3>
 
-                {expandedRing.has(ring.id) && (
-                  <div className="pl-4 mt-2">
-                    <h4 className="text-lg font-semibold">Projects</h4>
-                    <ul>
-                      {ring.projects.map((project) => (
-                        <li
-                          key={project.id}
-                          className="flex items-center space-x-2"
-                        >
-                          <input
-                            type="checkbox"
-                            checked={project.validated}
-                            disabled={!project.validated}
-                            onChange={() => {}}
-                          />
-                          <span>{project.name}</span>
-                        </li>
-                      ))}
-                    </ul>
+                    {expandedRing.has(ring.id) && (
+                      <div className="pl-4 mt-2">
+                        <h4 className="text-lg font-semibold">Projects</h4>
+                        <ul>
+                          {ring.projects.map((project) => (
+                            <li
+                              key={project.id}
+                              className="flex items-center space-x-2"
+                            >
+                              <input
+                                type="checkbox"
+                                checked={project.validated}
+                                disabled={!project.validated}
+                                onChange={() => {}}
+                              />
+                              <span>{project.name}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
 
-              {/* Right column: Checkbox for claim */}
-              <div className="flex items-center justify-end w-1/4">
-                <input
-                  type="checkbox"
-                  checked={selectedRings.has(ring.id)}
-                  onChange={() => handleCheckboxChange(ring.id)}
-                  disabled={ring.status === 'claimed'}
-                />
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Right column: Rings 3, 4, 5 */}
-        <div className="flex flex-col w-1/2 gap-8">
-          {rings.slice(3, 6).map((ring) => (
-            <div
-              key={ring.id}
-              className="flex justify-between items-center space-x-8 p-4 border-b"
-            >
-              {/* Left column: Title and expandable project list */}
-              <div className="flex flex-col w-3/4 items-start">
-                <h3
-                  className="text-xl font-bold cursor-pointer mb-4"
-                  onClick={() => toggleExpandRing(ring.id)}
-                >
-                  Ring {ring.id}{' '}
-                  {ring.status === 'claimed' ? '(Claimed)' : '(Claimable)'}
-                </h3>
-
-                {expandedRing.has(ring.id) && (
-                  <div className="pl-4 mt-2">
-                    <h4 className="text-lg font-semibold">Projects</h4>
-                    <ul>
-                      {ring.projects.map((project) => (
-                        <li
-                          key={project.id}
-                          className="flex items-center space-x-2"
-                        >
-                          <input
-                            type="checkbox"
-                            checked={project.validated}
-                            disabled={!project.validated}
-                            onChange={() => {}}
-                          />
-                          <span>{project.name}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-              </div>
-
-              {/* Right column: Checkbox for claim */}
-              <div className="flex items-center justify-end w-1/4">
-                <input
-                  type="checkbox"
-                  checked={selectedRings.has(ring.id)}
-                  onChange={() => handleCheckboxChange(ring.id)}
-                  disabled={ring.status === 'claimed'}
-                />
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Ring 6: Display outside of the flex container */}
-      <div className="flex justify-center mt-8">
-        <div className="w-1/2 p-4 border-b">
-          <h3
-            className="text-xl font-bold cursor-pointer mb-4"
-            onClick={() => toggleExpandRing(6)}
-          >
-            Ring 6 (Claimable)
-          </h3>
-
-          {/* Ring 6 has projects like other rings */}
-          {expandedRing.has(6) && (
-            <div className="pl-4 mt-2">
-              <h4 className="text-lg font-semibold">Projects</h4>
-              <ul>
-                {rings[6].projects.map((project) => (
-                  <li key={project.id} className="flex items-center space-x-2">
+                  {/* Right column: Checkbox for claim */}
+                  <div className="flex items-center justify-end w-1/4">
                     <input
                       type="checkbox"
-                      checked={project.validated}
-                      disabled={!project.validated}
-                      onChange={() => {}}
+                      checked={selectedRings.has(ring.id)}
+                      onChange={() => handleCheckboxChange(ring.id)}
+                      disabled={ring.status === 'claimed'}
                     />
-                    <span>{project.name}</span>
-                  </li>
-                ))}
-              </ul>
+                  </div>
+                </div>
+              ))}
             </div>
-          )}
 
-          <div className="flex justify-center mt-4">
-            <input
-              type="checkbox"
-              checked={selectedRings.has(6)}
-              onChange={() => handleCheckboxChange(6)}
-              disabled={rings[6]?.status === 'claimed'}
-            />
+            {/* Right column: Rings 3, 4, 5, 6 */}
+            <div className="flex flex-col w-1/2 gap-8">
+              {rings.slice(3).map((ring) => (
+                <div
+                  key={ring.id}
+                  className="flex justify-between items-center space-x-8 p-4 border-b"
+                >
+                  {/* Left column: Title and expandable project list */}
+                  <div className="flex flex-col w-3/4 items-start">
+                    <h3
+                      className="text-xl font-bold cursor-pointer mb-4"
+                      onClick={() => toggleExpandRing(ring.id)}
+                    >
+                      Ring {ring.id}{' '}
+                      {ring.status === 'claimed' ? '(Claimed)' : '(Claimable)'}
+                    </h3>
+
+                    {expandedRing.has(ring.id) && (
+                      <div className="pl-4 mt-2">
+                        <h4 className="text-lg font-semibold">Projects</h4>
+                        <ul>
+                          {ring.projects.map((project) => (
+                            <li
+                              key={project.id}
+                              className="flex items-center space-x-2"
+                            >
+                              <input
+                                type="checkbox"
+                                checked={project.validated}
+                                disabled={!project.validated}
+                                onChange={() => {}}
+                              />
+                              <span>{project.name}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Right column: Checkbox for claim */}
+                  <div className="flex items-center justify-end w-1/4">
+                    <input
+                      type="checkbox"
+                      checked={selectedRings.has(ring.id)}
+                      onChange={() => handleCheckboxChange(ring.id)}
+                      disabled={ring.status === 'claimed'}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-      </div>
 
-      {/* "Claim All Selected" Button */}
-      <div className="flex justify-center mt-8 mb-4">
-        <button
-          className="px-6 py-3 bg-blue-500 text-white rounded"
-          onClick={handleClaimAll}
-          disabled={selectedRings.size === 0}
-        >
-          Claim All Selected Rings
-        </button>
-      </div>
+          {/* "Claim All Selected" Button */}
+          <div className="flex justify-center mt-8 mb-4">
+            <button
+              className="px-6 py-3 bg-blue-500 text-white rounded"
+              onClick={handleClaimAll}
+              disabled={selectedRings.size === 0}
+            >
+              Claim All Selected Rings
+            </button>
+          </div>
+        </>
+      ) : (
+        <div className="text-center text-gray-600">
+          Please connect your wallet to view and claim rings
+        </div>
+      )}
     </div>
   )
+
+  
 }
