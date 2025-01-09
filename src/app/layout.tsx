@@ -18,7 +18,7 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <RootLayoutClient>
-          <Web3Provider>{children}</Web3Provider>
+          {children}
         </RootLayoutClient>
       </body>
     </html>

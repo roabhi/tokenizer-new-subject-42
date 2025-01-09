@@ -246,7 +246,7 @@ export default function RingsDisplay({
               onClick={handleClaimAll}
               disabled={selectedRings.size === 0}
             >
-              Claim All Selected Rings
+              Claim Your 42ALT Tokens
             </button>
           </div>
         </>

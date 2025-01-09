@@ -10,7 +10,7 @@ import { ProjectUser, ProjectsUserList } from '../../types/42api'
 
 import RingsDisplay from '@/components/RingsDisplay'
 import SignInButton from '@/components/SignInButton'
-import { ConnectKitButton } from 'connectkit'
+// import { ConnectKitButton } from 'connectkit'
 
 // ? entry point
 
@@ -93,12 +93,12 @@ export default function HomePage() {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-      {session && (
+    <div className="flex flex-col items-center justify-center min-h-screen">
+      {/* {session && (
         <div className="absolute top-4 right-4">
           <ConnectKitButton />
         </div>
-      )}
+      )} */}
       <h1 className="max-w-[40rem] mx-auto w-full text-3xl font-bold mb-4 text-center">
         Claim your Rewards for completing your Common Core rings!
       </h1>
