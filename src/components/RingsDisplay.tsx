@@ -154,7 +154,7 @@ export default function RingsDisplay({
   return (
     <div className="flex items-center justify-center min-h-screen">
       <div>
-      <div className="min-w-[49.375rem] h-[29.6875rem] bg-[#202537] rounded-[1rem] p-8 rings-container">
+      <div className="min-w-[49.375rem] h-[29.6875rem] bg-[#202537] rounded-[1rem] p-8 flex flex-col z-10 shadow-[0_0.25rem_1.125rem_rgba(0,0,0,0.25)]">
         <div className="flex h-full">
           {/* Left Section */}
           <div className="flex-1 flex flex-col items-center justify-center pr-8">
