@@ -5,6 +5,7 @@
 import { useEffect, useState } from 'react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
+import Image from 'next/image'
 
 import { ProjectUser, ProjectsUserList } from '../../types/42api'
 
@@ -17,6 +18,8 @@ import SignInButton from '@/components/SignInButton'
 export default function HomePage() {
   const [userName, setUserName] = useState('')
 
+
+  const [userImage, setUserImage] = useState<string>('') // Store user nickname
   const [userNickname, setUserNickname] = useState<string>('') // Store user nickname
   const [myProjects, setMyProjects] = useState<ProjectUser[]>([]) // Store projects data
   const [metamaskAccount, setMetamaskAccount] = useState<string | null>(null) // Store MetaMask account
@@ -48,6 +51,8 @@ export default function HomePage() {
         console.log(data)
 
         setUserName(data.first_name)
+        setUserImage(data.image.versions.medium)
+        console.log("user image is ", data.image.versions.middle)
         setUserNickname(data.login) // Set user nickname
         setMyProjects(data.projects_users || [])
 
@@ -89,7 +94,11 @@ export default function HomePage() {
   }
 
   if (status === 'loading') {
-    return <div>Loading...</div>
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        Loading...
+      </div>
+    )
   }
 
   return (
@@ -99,28 +108,30 @@ export default function HomePage() {
           <ConnectKitButton />
         </div>
       )} */}
-      <h1 className="max-w-[40rem] mx-auto w-full text-3xl font-bold mb-4 text-center">
+      {/* <h1 className="max-w-[40rem] mx-auto w-full text-3xl font-bold mb-4 text-center">
         Claim your Rewards for completing your Common Core rings!
       </h1>
-      <p className="mb-6">Hello {userName}!</p>
+      <p className="mb-6"> <Image
+              src={userImage}
+              alt="user image"
+              width={102}
+              height={102}
+              className="w-[6.375rem] h-[6.375rem]"
+            /> Hello {userName}!</p> */}
 
       {/* Render SignInButton if the user is not authenticated */}
       {!session ? (
         <SignInButton />
       ) : (
         <>
-          {/* Render MetamaskButton only after the user is authenticated with 42 */}
-          {/* <MetamaskButton onConnected={handleMetamaskConnected} /> */}
-
-          {/* If MetaMask is connected, display the account */}
-          {/* {metamaskAccount && (
-            <p className="text-green-600 mt-4">
-              MetaMask Connected: {metamaskAccount}
-            </p>
-          )} */}
+         
 
           {/* Render RingsDisplay if the user is authenticated and has projects data */}
-          <RingsDisplay userNickname={userNickname} myProjects={myProjects} />
+          <RingsDisplay 
+            userNickname={userNickname} 
+            myProjects={myProjects}
+            userImage={userImage}
+          />
         </>
       )}
     </div>

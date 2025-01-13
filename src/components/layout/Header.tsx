@@ -30,7 +30,7 @@ export default function Header() {
           <Link href="#" className="hover:text-opacity-80">
             Github
           </Link>
-          <Link href="#" className="hover:text-opacity-80">
+          <Link href="https://faucet.polygon.technology/" className="hover:text-opacity-80" target='_blank'>
             Faucet
           </Link>
         </nav>
