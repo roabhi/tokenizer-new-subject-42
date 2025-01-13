@@ -4,7 +4,7 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'ipfs.io',
+        hostname: 'cdn.intra.42.fr',
       },
     ],
   },

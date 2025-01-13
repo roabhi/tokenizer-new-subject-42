@@ -1,11 +1,15 @@
+'use client'
+
 import { useEffect, useState } from 'react'
-import { useAccount } from 'wagmi' // Import useAccount hook from wagmi
+import { useAccount } from 'wagmi'
 import { getClaimedRings } from '@/utils/blockchain'
-import { ringProjects } from '@/lib/constants/ringProjects' // Import the ringProjects
+import { ringProjects } from '@/lib/constants/ringProjects'
+import Image from 'next/image'
 
 interface RingsDisplayProps {
   userNickname: string
-  myProjects: any[] // Adjust the type if you have a specific type for your projects
+  myProjects: any[]
+  userImage: string
 }
 
 type RingStatus = 'claimed' | 'claimable' | 'unavailable'
@@ -13,40 +17,36 @@ type RingStatus = 'claimed' | 'claimable' | 'unavailable'
 interface Ring {
   id: number
   status: RingStatus
-  projects: { id: number; name: string; validated: boolean }[] // Projects in each ring
+  projects: { id: number; name: string; validated: boolean }[]
 }
 
 export default function RingsDisplay({
   userNickname,
   myProjects,
+  userImage,
 }: RingsDisplayProps) {
-  const [rings, setRings] = useState<Ring[]>([])
   const { address: walletAddress, isConnected } = useAccount()
-
-  const [expandedRing, setExpandedRing] = useState<Set<number>>(new Set())
+  const [rings, setRings] = useState<Ring[]>([])
   const [selectedRings, setSelectedRings] = useState<Set<number>>(new Set())
 
   useEffect(() => {
     const fetchClaimedRings = async () => {
       try {
         if (!isConnected || !walletAddress) {
-          console.warn('Wallet not connected. Cannot fetch claimed rings.')
+          setRings([])
+          setSelectedRings(new Set())
           return
         }
 
-        // Get the claimed rings for the user
         const claimedRings = await getClaimedRings(userNickname, walletAddress)
-
-        // Generate all 7 rings and determine their statuses
         const allRings: Ring[] = Array.from({ length: 7 }, (_, i) => {
           const isClaimed = claimedRings.includes(i)
-
           const ringData = ringProjects.find((ring) => ring.ringId === i)
           const projects = ringData ? ringData.projects : []
 
           return {
             id: i,
-            status: isClaimed ? 'claimed' : 'claimable', // Explicitly set the status
+            status: isClaimed ? 'claimed' : 'claimable',
             projects,
           }
         })
@@ -60,6 +60,16 @@ export default function RingsDisplay({
     fetchClaimedRings()
   }, [userNickname, walletAddress, isConnected])
 
+  if (!isConnected) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-[#202537] text-2xl">
+          Please connect your wallet
+        </div>
+      </div>
+    )
+  }
+
   const handleClaim = async (ringId: number) => {
     try {
       console.log(`Claiming ring ${ringId}`)
@@ -69,17 +79,17 @@ export default function RingsDisplay({
     }
   }
 
-  const toggleExpandRing = (ringId: number) => {
-    setExpandedRing((prev) => {
-      const newSet = new Set(prev)
-      if (newSet.has(ringId)) {
-        newSet.delete(ringId)
-      } else {
-        newSet.add(ringId)
-      }
-      return newSet
-    })
-  }
+  // const toggleExpandRing = (ringId: number) => {
+  //   setExpandedRing((prev) => {
+  //     const newSet = new Set(prev)
+  //     if (newSet.has(ringId)) {
+  //       newSet.delete(ringId)
+  //     } else {
+  //       newSet.add(ringId)
+  //     }
+  //     return newSet
+  //   })
+  // }
 
   const handleCheckboxChange = (ringId: number) => {
     setSelectedRings((prevSelectedRings) => {
@@ -110,7 +120,7 @@ export default function RingsDisplay({
         case 5:
           return acc + 350
         case 6:
-          return acc + 500
+          return acc + 1000
         default:
           return acc
       }
@@ -124,139 +134,101 @@ export default function RingsDisplay({
     // Add your transaction logic here with the selected rings and the calculated amount
   }
 
+  const getRingAmount = (ringId: number) => {
+    switch (ringId) {
+      case 0: return 100
+      case 1: return 150
+      case 2: return 200
+      case 3: return 250
+      case 4: return 300
+      case 5: return 350
+      case 6: return 1000
+      default: return 0
+    }
+  }
+
+  const getTotalSelectedAmount = () => {
+    return Array.from(selectedRings).reduce((acc, ringId) => acc + getRingAmount(ringId), 0)
+  }
+
   return (
-    <div className="max-w-[74rem] mx-auto">
-      {/* <h2 className="text-center mb-8">Claimed Rings</h2> */}
-
-      {isConnected ? (
-        <>
-          {/* Parent container with flex for all rings */}
-          <div className="flex gap-16">
-            {/* Left column: Rings 0, 1, 2 */}
-            <div className="flex flex-col w-1/2 gap-8">
-              {rings.slice(0, 3).map((ring) => (
-                <div
-                  key={ring.id}
-                  className="flex justify-between items-center space-x-8 p-4 border-b"
-                >
-                  {/* Left column: Title and expandable project list */}
-                  <div className="flex flex-col w-3/4 items-start">
-                    <h3
-                      className="text-xl font-bold cursor-pointer mb-4"
-                      onClick={() => toggleExpandRing(ring.id)}
-                    >
-                      Ring {ring.id}{' '}
-                      {ring.status === 'claimed' ? '(Claimed)' : '(Claimable)'}
-                    </h3>
-
-                    {expandedRing.has(ring.id) && (
-                      <div className="pl-4 mt-2">
-                        <h4 className="text-lg font-semibold">Projects</h4>
-                        <ul>
-                          {ring.projects.map((project) => (
-                            <li
-                              key={project.id}
-                              className="flex items-center space-x-2"
-                            >
-                              <input
-                                type="checkbox"
-                                checked={project.validated}
-                                disabled={!project.validated}
-                                onChange={() => {}}
-                              />
-                              <span>{project.name}</span>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Right column: Checkbox for claim */}
-                  <div className="flex items-center justify-end w-1/4">
-                    <input
-                      type="checkbox"
-                      checked={selectedRings.has(ring.id)}
-                      onChange={() => handleCheckboxChange(ring.id)}
-                      disabled={ring.status === 'claimed'}
-                    />
-                  </div>
-                </div>
-              ))}
+    <div className="flex items-center justify-center min-h-screen">
+      <div>
+      <div className="min-w-[49.375rem] h-[29.6875rem] bg-[#202537] rounded-[1rem] p-8 rings-container">
+        <div className="flex h-full">
+          {/* Left Section */}
+          <div className="flex-1 flex flex-col items-center justify-center pr-8">
+            <div className="w-36 h-36 rounded-full overflow-hidden mb-6 border-[0.625rem] border-[#4A5062]">
+              <Image
+                src={userImage}
+                alt={userNickname}
+                width={144}
+                height={144}
+                className="w-full h-full object-cover"
+              />
             </div>
+            <h2 className="text-white text-2xl mb-2">Hello {userNickname}!</h2>
+            <p className="text-[#71717A] text-center">
+              Claim your rewards by selecting your completed rings
+            </p>
+          </div>
 
-            {/* Right column: Rings 3, 4, 5, 6 */}
-            <div className="flex flex-col w-1/2 gap-8">
-              {rings.slice(3).map((ring) => (
-                <div
-                  key={ring.id}
-                  className="flex justify-between items-center space-x-8 p-4 border-b"
-                >
-                  {/* Left column: Title and expandable project list */}
-                  <div className="flex flex-col w-3/4 items-start">
-                    <h3
-                      className="text-xl font-bold cursor-pointer mb-4"
-                      onClick={() => toggleExpandRing(ring.id)}
-                    >
-                      Ring {ring.id}{' '}
-                      {ring.status === 'claimed' ? '(Claimed)' : '(Claimable)'}
-                    </h3>
-
-                    {expandedRing.has(ring.id) && (
-                      <div className="pl-4 mt-2">
-                        <h4 className="text-lg font-semibold">Projects</h4>
-                        <ul>
-                          {ring.projects.map((project) => (
-                            <li
-                              key={project.id}
-                              className="flex items-center space-x-2"
-                            >
-                              <input
-                                type="checkbox"
-                                checked={project.validated}
-                                disabled={!project.validated}
-                                onChange={() => {}}
-                              />
-                              <span>{project.name}</span>
-                            </li>
-                          ))}
-                        </ul>
+          {/* Right Section */}
+          <div className="flex-1 overflow-y-auto pr-4">
+            <div className="space-y-4">
+              {rings.map((ring) => (
+                <div key={ring.id} className="bg-[#2A3144] rounded-lg p-4">
+                  <div className="flex justify-between items-center">
+                    <div>
+                      <h3 className="text-white text-lg">Ring {ring.id}</h3>
+                      <p className={`text-sm ${
+                        ring.status === 'claimable' ? 'text-[#70FFCF]' :
+                        'text-[#FF7072]'
+                      }`}>
+                        {ring.status === 'claimable' 
+                          ? `Claim ${getRingAmount(ring.id)} 42ALT Tokens`
+                          : ring.status === 'claimed'
+                          ? `Claimed for ${getRingAmount(ring.id)} 42ALT Tokens`
+                          : 'Not claimable yet'}
+                      </p>
+                    </div>
+                    <label className="switch">
+                      <input
+                        type="checkbox"
+                        checked={selectedRings.has(ring.id)}
+                        onChange={() => handleCheckboxChange(ring.id)}
+                        disabled={ring.status !== 'claimable'}
+                        className="hidden"
+                      />
+                      <div className={`w-12 h-6 rounded-full transition-colors  cursor-pointer  relative ${
+                        selectedRings.has(ring.id) ? 'bg-[#70FFCF]' : 'bg-[#F0F6FF]'
+                      } ${ring.status !== 'claimable' ? 'opacity-50' : ''}`}>
+                        <div className={`absolute top-1/2 -translate-y-1/2 w-5 h-5 rounded-full transform transition-transform bg-[#202537] ${
+                          selectedRings.has(ring.id) ? 'translate-x-6' : 'translate-x-1'
+                        }`} />
                       </div>
-                    )}
-                  </div>
-
-                  {/* Right column: Checkbox for claim */}
-                  <div className="flex items-center justify-end w-1/4">
-                    <input
-                      type="checkbox"
-                      checked={selectedRings.has(ring.id)}
-                      onChange={() => handleCheckboxChange(ring.id)}
-                      disabled={ring.status === 'claimed'}
-                    />
+                    </label>
                   </div>
                 </div>
               ))}
             </div>
           </div>
-
-          {/* "Claim All Selected" Button */}
-          <div className="flex justify-center mt-8 mb-4">
-            <button
-              className="px-6 py-3 bg-blue-500 text-white rounded"
-              onClick={handleClaimAll}
-              disabled={selectedRings.size === 0}
-            >
-              Claim Your 42ALT Tokens
-            </button>
-          </div>
-        </>
-      ) : (
-        <div className="text-center text-gray-600">
-          Please connect your wallet to view and claim rings
         </div>
-      )}
+
+       
+      </div>
+       {/* Claim Button */}
+       <div className="flex justify-end mt-6">
+          <button
+            onClick={handleClaimAll}
+            disabled={selectedRings.size === 0}
+            className="bg-[#FFCF70] text-[#202537] px-6 py-3 rounded-lg font-bold uppercase disabled:opacity-50"
+          >
+            Claim rewards
+          </button>
+        </div>
+      </div>
+      
     </div>
   )
-
-  
 }
