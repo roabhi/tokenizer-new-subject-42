@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useAccount } from 'wagmi'
-import { getClaimedRings } from '@/utils/blockchain'
+import { getClaimedRings, claimMultipleRings } from '@/utils/blockchain'
 import { ringProjects } from '@/lib/constants/ringProjects'
 import Image from 'next/image'
 
@@ -103,35 +103,38 @@ export default function RingsDisplay({
     })
   }
 
-  const handleClaimAll = () => {
-    // Handle claim for all selected rings
-    const amount = Array.from(selectedRings).reduce((acc, ringId) => {
-      switch (ringId) {
-        case 0:
-          return acc + 100
-        case 1:
-          return acc + 150
-        case 2:
-          return acc + 200
-        case 3:
-          return acc + 250
-        case 4:
-          return acc + 300
-        case 5:
-          return acc + 350
-        case 6:
-          return acc + 1000
-        default:
-          return acc
+  const handleClaimAll = async () => {
+    try {
+      if (!walletAddress || selectedRings.size === 0) {
+        console.log('No wallet connected or no rings selected')
+        return
       }
-    }, 0)
 
-    console.log(
-      `Claiming rings: ${Array.from(
-        selectedRings
-      )} with total amount: ${amount}`
-    )
-    // Add your transaction logic here with the selected rings and the calculated amount
+      const selectedRingsArray = Array.from(selectedRings)
+      const totalAmount = selectedRingsArray.reduce((acc, ringId) => {
+        return acc + getRingAmount(ringId)
+      }, 0)
+
+      console.log('Attempting to claim with:', {
+        nickname: userNickname,
+        rings: selectedRingsArray,
+        amount: totalAmount,
+        wallet: walletAddress
+      })
+
+      await claimMultipleRings(
+        userNickname,
+        selectedRingsArray,
+        totalAmount,
+        walletAddress as `0x${string}`
+      )
+
+      setSelectedRings(new Set())
+    } catch (error) {
+      console.error('Error claiming rings:', error)
+    } finally {
+      window.location.reload()
+    }
   }
 
   const getRingAmount = (ringId: number) => {

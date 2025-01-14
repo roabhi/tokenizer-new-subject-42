@@ -1,5 +1,6 @@
-import { createWalletClient, createPublicClient, http } from 'viem'
+import { createWalletClient, createPublicClient, http, parseUnits } from 'viem'
 import { polygonAmoy } from 'wagmi/chains'
+import { custom } from 'viem'
 
 // ABI Import
 import AltarianTokenABI from '@/abi/AltarianToken.json'
@@ -12,10 +13,10 @@ const publicClient = createPublicClient({
   transport: http(),
 })
 
-// Initialize wallet client (for writing transactions)
+// Initialize wallet client with window.ethereum
 const walletClient = createWalletClient({
   chain: polygonAmoy,
-  transport: http(),
+  transport: window?.ethereum ? custom(window.ethereum) : http(),
 })
 
 // blockchain.ts
@@ -39,30 +40,56 @@ export const getClaimedRings = async (
   }
 }
 
-/**
- * Claim a ring on behalf of the student.
- * @param walletAddress - The address of the wallet.
- * @param ringId - The ID of the ring to be claimed.
- */
-export const claimRing = async (walletAddress: string, ringId: number) => {
-  try {
-    // Ensure walletAddress is valid (starts with "0x")
-    const validWalletAddress = walletAddress.startsWith('0x')
-      ? walletAddress
-      : `0x${walletAddress}`
+// /**
+//  * Claim a ring on behalf of the student.
+//  * @param walletAddress - The address of the wallet.
+//  * @param ringId - The ID of the ring to be claimed.
+//  */
+// export const claimRing = async (walletAddress: string, ringId: number) => {
+//   try {
+//     // Ensure walletAddress is valid (starts with "0x")
+//     const validWalletAddress = walletAddress.startsWith('0x')
+//       ? walletAddress
+//       : `0x${walletAddress}`
 
-    // Call the smart contract to claim the ring using the wallet client
+//     // Call the smart contract to claim the ring using the wallet client
+//     const tx = await walletClient.writeContract({
+//       address: CONTRACT_ADDRESS as `0x${string}`,
+//       abi: AltarianTokenABI,
+//       functionName: 'claimRing',
+//       args: [ringId],
+//       account: validWalletAddress as `0x${string}`, // Ensure the address is in the correct format
+//     })
+
+//     console.log('Claim Transaction:', tx)
+//     return tx
+//   } catch (error) {
+//     console.error('Error claiming ring:', error)
+//   }
+// }
+
+export const claimMultipleRings = async (
+  nickname: string,
+  rings: number[],
+  rewardAmount: number,
+  account: `0x${string}`
+) => {
+  try {
     const tx = await walletClient.writeContract({
       address: CONTRACT_ADDRESS as `0x${string}`,
       abi: AltarianTokenABI,
-      functionName: 'claimRing',
-      args: [ringId],
-      account: validWalletAddress as `0x${string}`, // Ensure the address is in the correct format
+      functionName: 'claimReward',
+      args: [
+        nickname, 
+        rings, 
+        parseUnits(rewardAmount.toString(), 18)
+      ],
+      account
     })
 
-    console.log('Claim Transaction:', tx)
     return tx
   } catch (error) {
-    console.error('Error claiming ring:', error)
+    console.error('Error in claimMultipleRings:', error)
+    throw error
   }
 }
