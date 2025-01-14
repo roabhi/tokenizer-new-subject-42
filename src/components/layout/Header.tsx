@@ -31,13 +31,13 @@ export default function Header() {
             About
           </Link>
           <Link 
-            href="#" 
+            href="https://github.com/roabhi/tokenizer-new-subject-42" 
             className="opacity-100 hover:opacity-65 transition-opacity relative after:absolute after:bottom-0 after:left-0 after:w-full after:h-[0.0625rem] after:bg-current after:origin-left after:scale-x-0 hover:after:scale-x-100 after:transition-transform"
           >
             Github
           </Link>
           <Link 
-            href="#" 
+            href="https://faucet.polygon.technology/" 
             className="opacity-100 hover:opacity-65 transition-opacity relative after:absolute after:bottom-0 after:left-0 after:w-full after:h-[0.0625rem] after:bg-current after:origin-left after:scale-x-0 hover:after:scale-x-100 after:transition-transform"
           >
             Faucet
