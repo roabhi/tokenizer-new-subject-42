@@ -14,10 +14,12 @@ const publicClient = createPublicClient({
 })
 
 // Initialize wallet client with window.ethereum
-const walletClient = createWalletClient({
-  chain: polygonAmoy,
-  transport: window?.ethereum ? custom(window.ethereum) : http(),
-})
+const walletClient = typeof window !== 'undefined' 
+  ? createWalletClient({
+      chain: polygonAmoy,
+      transport: window?.ethereum ? custom(window.ethereum) : http()
+    })
+  : null
 
 // blockchain.ts
 
@@ -74,16 +76,16 @@ export const claimMultipleRings = async (
   rewardAmount: number,
   account: `0x${string}`
 ) => {
+  if (!walletClient) {
+    throw new Error('Wallet client not initialized')
+  }
+
   try {
     const tx = await walletClient.writeContract({
       address: CONTRACT_ADDRESS as `0x${string}`,
       abi: AltarianTokenABI,
       functionName: 'claimReward',
-      args: [
-        nickname, 
-        rings, 
-        parseUnits(rewardAmount.toString(), 18)
-      ],
+      args: [nickname, rings, parseUnits(rewardAmount.toString(), 18)],
       account
     })
 
