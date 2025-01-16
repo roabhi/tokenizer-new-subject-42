@@ -10,10 +10,13 @@ export default function AboutPage() {
             Tokenizer is an outer core project from the 42 curriculum as a web3 related project.
           </p>
           <p>
-            For this project I wanted to go beyond the requirements for the project by providing a tool to put in good use what an NFT could bring as the subject for the project, by the time I subscribed for it, was open enough to allow that.
+            For this project I wanted to go beyond the requirements for the project by providing a tool to put in good use what a native token for the 42 network could bring to students.
           </p>
           <p>
-            The goal for me was to incorporate the 42 Curriculum into project in some way and to regard students for their achievements using an NFT that can only be obtained based on the achievement. For that I used 42 API, regarding students that, like me, made it to pass the Common Core becoming thus becoming members of the 42 network for life.
+            The goal for me was to incorporate the 42 Curriculum into project in some way and to regard students as they complete rings from the Common Core using an ERC20 token that can only be obtained based on the student's achievements. Using the 42 API I was able to implement an indirect multi signature method to allow students to claim their tokens.
+          </p>
+          <p>
+            This is an on going project and the tokenomics are still under development. The final goal goes beyond the requirements of the project and aims to provide a whole ecosystem for the 42 network where students can exchange the time and effort they put into the 42 curriculum to good use in the real world.
           </p>
         </div>
       </div>

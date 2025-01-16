@@ -170,7 +170,7 @@ export default function RingsDisplay({
                 className="w-full h-full object-cover"
               />
             </div>
-            <h2 className="text-white text-2xl mb-2">Hello {userNickname}!</h2>
+            <h2 className="text-white text-2xl mb-2">Hello <b>{userNickname}</b>!</h2>
             <p className="text-[#71717A] text-center">
               Claim your rewards by selecting your completed rings
             </p>
