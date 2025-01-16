@@ -1,5 +1,9 @@
 # Tokenizer 42 - Build your own token
 
+## Demo
+
+[Live Demo ↗](https://tokenizer-42.vercel.app/){:target="_blank"}
+
 ## Introductrion
 
 Welcome to the exciting world of blockchain technology!
