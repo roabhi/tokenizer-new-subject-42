@@ -2,7 +2,7 @@
 
 ## Demo
 
-[Live Demo ↗](https://tokenizer-42.vercel.app/){:target="_blank"}
+[Application deployed on Vercel ↗](https://tokenizer-42.vercel.app/)
 
 ## Introductrion
 
