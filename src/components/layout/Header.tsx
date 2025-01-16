@@ -33,12 +33,14 @@ export default function Header() {
           <Link 
             href="https://github.com/roabhi/tokenizer-new-subject-42" 
             className="opacity-100 hover:opacity-65 transition-opacity relative after:absolute after:bottom-0 after:left-0 after:w-full after:h-[0.0625rem] after:bg-current after:origin-left after:scale-x-0 hover:after:scale-x-100 after:transition-transform"
+            target="_blank"
           >
             Github
           </Link>
           <Link 
             href="https://faucet.polygon.technology/" 
             className="opacity-100 hover:opacity-65 transition-opacity relative after:absolute after:bottom-0 after:left-0 after:w-full after:h-[0.0625rem] after:bg-current after:origin-left after:scale-x-0 hover:after:scale-x-100 after:transition-transform"
+            target="_blank"
           >
             Faucet
           </Link>
