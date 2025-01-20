@@ -4,8 +4,8 @@ import { ProjectUser } from '../../types/42api'
  * Defines the project requirements for each ring.
  */
 const RING_REQUIREMENTS: Record<number, (string | string[])[]> = {
-  0: ['libft'],
-  1: ['born2beroot', 'get_next_line', 'printf'],
+  0: ['Libft'],
+  1: ['Born2beroot', 'get_next_line', 'ft_printf'],
   2: [
     'exam_rank_02',
     'push_swap',
@@ -49,20 +49,46 @@ export const checkRingEligibility = (
   const requirements = RING_REQUIREMENTS[ringNumber]
   if (!requirements) return false
 
+  // Only consider validated projects
+  const validatedProjects = projects.filter(
+    (project) => project['validated?'] === true
+  )
+
+  // console.log(
+  //   'All validated projects:',
+  //   validatedProjects.map((p) => p.project.name)
+  // )
+  // console.log(`Ring ${ringNumber} requirements:`, requirements)
+
+  const normalizeProjectName = (name: string): string => {
+    const normalized = name.toLowerCase().replace(/[-_\s]/g, '')
+    // console.log(`Normalizing: ${name} -> ${normalized}`)
+    return normalized
+  }
+
   return requirements.every((requirement) => {
-    if (Array.isArray(requirement)) {
-      // At least one project from the group must be validated
-      return requirement.some((req) =>
-        projects.some(
-          (project) => project.project.name === req && project['validated?']
-        )
-      )
-    } else {
-      // Single project requirement
-      return projects.some(
-        (project) =>
-          project.project.name === requirement && project['validated?']
-      )
+    if (typeof requirement === 'string') {
+      const hasProject = validatedProjects.some((project) => {
+        const normalizedProject = normalizeProjectName(project.project.name)
+        const normalizedRequirement = normalizeProjectName(requirement)
+        // console.log(
+        //   `Comparing: ${normalizedProject} with ${normalizedRequirement}`
+        // )
+        return normalizedProject === normalizedRequirement
+      })
+      // console.log(`Mandatory project ${requirement}: ${hasProject}`)
+      return hasProject
     }
+
+    // If it's an array, student needs to complete ONE of these projects
+    const hasOneOptional = requirement.some((optionalProject) =>
+      validatedProjects.some(
+        (project) =>
+          normalizeProjectName(project.project.name) ===
+          normalizeProjectName(optionalProject)
+      )
+    )
+    console.log(`Optional group ${requirement}: ${hasOneOptional}`)
+    return hasOneOptional
   })
 }

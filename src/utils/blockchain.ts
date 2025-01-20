@@ -14,12 +14,13 @@ const publicClient = createPublicClient({
 })
 
 // Initialize wallet client with window.ethereum
-const walletClient = typeof window !== 'undefined' 
-  ? createWalletClient({
-      chain: polygonAmoy,
-      transport: window?.ethereum ? custom(window.ethereum) : http()
-    })
-  : null
+const walletClient =
+  typeof window !== 'undefined'
+    ? createWalletClient({
+        chain: polygonAmoy,
+        transport: window?.ethereum ? custom(window.ethereum) : http(),
+      })
+    : null
 
 // blockchain.ts
 
@@ -81,15 +82,17 @@ export const claimMultipleRings = async (
   }
 
   try {
-    const tx = await walletClient.writeContract({
+    const hash = await walletClient.writeContract({
       address: CONTRACT_ADDRESS as `0x${string}`,
       abi: AltarianTokenABI,
       functionName: 'claimReward',
       args: [nickname, rings, parseUnits(rewardAmount.toString(), 18)],
-      account
+      account,
     })
 
-    return tx
+    // Wait for transaction using publicClient
+    const receipt = await publicClient.waitForTransactionReceipt({ hash })
+    return receipt
   } catch (error) {
     console.error('Error in claimMultipleRings:', error)
     throw error
