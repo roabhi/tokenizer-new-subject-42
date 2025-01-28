@@ -2,7 +2,7 @@
 
 ## Demo
 
-[Application deployed on Vercel ↗](https://tokenizer-42.vercel.app/)
+[Application deployed on Vercel ↗](https://tokenizer-new-subject-42.vercel.app/)
 
 ## Introductrion
 
@@ -55,7 +55,7 @@ FORTY_TWO_CLIENT_SECRET=YOUR_SECRET
 # Geberated with --> node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
 NEXTAUTH_SECRET=YOUR_SECRET
 
-# Base URL 
+# Base URL
 NEXTAUTH_URL=YOUR_BASE_URL
 # Redirect URI (this is the URI where users will be redirected after authentication)
 # Format the URI appropriately. Note that you should not include any query parameters here.
